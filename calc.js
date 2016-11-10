@@ -1,6 +1,40 @@
 
 // TODO: DEFINE ANY VARIABLES HERE
 
+var buffer = '';
+var lastOperator = false;
+var lastDecimal = false;
+var operator = '';
+var total = 0;
+
+// DEFINE YOUR FUNCTIONS HERE
+
+
+
+function add(valueOne, valueTwo) {
+    valueOne = parseFloat(valueOne);
+    valueTwo = parseFloat(valueTwo);
+    return valueOne + valueTwo;
+}
+
+function divide(valueOne, valueTwo) {
+    valueOne = parseFloat(valueOne);
+    valueTwo = parseFloat(valueTwo);
+    return valueOne / valueTwo;
+}
+
+function subtract(valueOne, valueTwo) {
+    valueOne = parseFloat(valueOne);
+    valueTwo = parseFloat(valueTwo);
+    return valueTwo - valueOne;
+}
+
+function multiply(valueOne, valueTwo) {
+    valueOne = parseFloat(valueOne);
+    valueTwo = parseFloat(valueTwo);
+    return valueOne * valueTwo;
+}
+
 
 
 /**
@@ -9,12 +43,96 @@
  * This function is called each time a button is clicked. You must decide what
  * to do in each case (most likely call another function).
  *
- * @param  {String} buttonValue   The value of the button that was clicked on, for example 6 or "+"
+ * @param  {String} buttonValue   The value of the button that was clicked on, for example "6" or "+"
  */
+
+
+
 function handleButtonClick(buttonValue) {
 
-    // TODO: YOUR CODE GOES IN HERE!
+    if (buttonValue === 'clear') {
+        buffer = '';
+        total = 0;
+    } else if (buttonValue === '+' || buttonValue === '/' || buttonValue === 'x' || buttonValue === '-' || buttonValue === '=') {
 
+        switch (buttonValue) {
+            case '+':
+                if (operator === '+' && total !== 0) {
+                    buffer = add(total, buffer);
+                    total = buffer;
+                }
+                total = parseFloat(buffer);
+                operator = buttonValue;
+                lastOperator = true;
+                break;
+
+            case '/':
+                if (operator === '/' && total !== 0) {
+                    buffer = divide(total, buffer);
+                    total = buffer;
+                }
+                total = parseFloat(buffer);
+                operator = buttonValue;
+                lastOperator = true;
+                break;
+
+            case 'x':
+                if (operator === 'x' && total !== 0) {
+                    buffer = multiply(total, buffer);
+                    total = buffer;
+                }
+                total = parseFloat(buffer);
+                operator = buttonValue;
+                lastOperator = true;
+                break;
+
+            case '-':
+                operator = buttonValue;
+                if (buffer === '') {
+                    buffer = buttonValue;
+                    lastOperator = false;
+                } else {
+                    if (operator === '-' && total !== 0) {
+                        buffer = subtract(buffer, total);
+                        total = buffer;
+                    }
+                    lastOperator = true;
+                    total = parseFloat(buffer);
+                }
+                break;
+
+            case '=':
+                if (operator === '+') {
+                    buffer = add(total, buffer);
+                } else if (operator === '-') {
+                    buffer = subtract(buffer, total);
+                } else if (operator === 'x') {
+                    buffer = multiply(total, buffer);
+                } else if (lastOperator === '/') {
+                    buffer = divide(total, buffer);
+                }
+                total = 0;
+
+                break;
+        }
+    } else {
+        if (lastOperator === true) {
+            buffer = buttonValue;
+            lastOperator = false;
+            lastDecimal = false;
+        } else if (buttonValue === '.' && lastDecimal === false) {
+            buffer += buttonValue;
+            lastDecimal = true;
+        } else if (buttonValue === '.' && lastDecimal === true) {
+            buffer = buffer;
+        } else {
+            buffer += buttonValue;
+            lastDecimal = false;
+        }
+    }
+
+
+    updateDisplay(buffer);
 }
 
 
